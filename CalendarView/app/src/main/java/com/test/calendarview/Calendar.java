@@ -12,8 +12,11 @@ import androidx.annotation.NonNull;
 
 public class Calendar extends CalendarView {
 
+    private static final int ACTION_SCROLL_UP = 1;
+    private static final int ACTION_SCROLL_DOWN = 2;
+
     private int TouchSlop;
-    private long DateChange;
+    private int Action;
 
     public Calendar(@NonNull Context context) {
         super(context);
@@ -21,7 +24,7 @@ public class Calendar extends CalendarView {
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         ViewConfiguration vc = ViewConfiguration.get(context);
         TouchSlop = vc.getScaledTouchSlop();
-        DateChange = TimeUnit.DAYS.toMillis(365);
+        Action = 0;
     }
 
     @Override
@@ -36,12 +39,11 @@ public class Calendar extends CalendarView {
         float yDiff = event.getHistoricalY(0) - event.getY();
 
         if (Math.abs(yDiff) > xDiff && Math.abs(yDiff) > TouchSlop){
-            if (yDiff < 0 && DateChange > 0){
-                DateChange *= -1;
+            if (yDiff < 0){
+                Action = ACTION_SCROLL_DOWN;
             }
-
-            if (yDiff > 0 && DateChange < 0){
-                DateChange *= -1;
+            else if (yDiff > 0){
+                Action = ACTION_SCROLL_UP;
             }
 
             return true;
@@ -62,7 +64,15 @@ public class Calendar extends CalendarView {
 
     @Override
     public boolean performClick(){
-        setDate(getDate() + DateChange);
+        final long msYear = TimeUnit.DAYS.toMillis(365);
+
+        if (Action == ACTION_SCROLL_UP){
+            setDate(getDate() + msYear);
+        }
+        else if (Action == ACTION_SCROLL_DOWN){
+            setDate(getDate() - msYear);
+        }
+
         return super.performClick();
     }
 }
