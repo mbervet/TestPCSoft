@@ -12,37 +12,46 @@ import androidx.annotation.NonNull;
 
 public class Calendar extends CalendarView {
 
-    private static final int ACTION_SCROLL_UP = 1;
-    private static final int ACTION_SCROLL_DOWN = 2;
+    private final int ACTION_SCROLL_UP = 1;
+    private final int ACTION_SCROLL_DOWN = 2;
+    private final int ACTION_LONG_CLICK = 3;
+    private final int LongClickTimeUP = 300;
 
     private int TouchSlop;
-    private int Action;
+    private int Action = 0;
 
     public Calendar(@NonNull Context context) {
         super(context);
         setFirstDayOfWeek(2);
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        setLongClickable(true);
         ViewConfiguration vc = ViewConfiguration.get(context);
         TouchSlop = vc.getScaledTouchSlop();
-        Action = 0;
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        final int action = event.getActionMasked();
+        if(event.getActionMasked() != MotionEvent.ACTION_MOVE && event.getHistorySize() == 0){
+            if (event.getEventTime() - event.getDownTime() > LongClickTimeUP){
+                Action = ACTION_LONG_CLICK;
 
-        if(event.getHistorySize() == 0 || action != MotionEvent.ACTION_MOVE){
-            return false;// Do not intercept touch event, let the child handle it
+                return true;
+            }
+
+            return false;
         }
+
+        System.out.println(event.getHistorySize());
+        System.out.println(event.getDownTime() - event.getEventTime());
 
         float xDiff = Math.abs(event.getHistoricalX(0) - event.getX());
         float yDiff = event.getHistoricalY(0) - event.getY();
+        System.out.println(xDiff + " " + yDiff);
 
-        if (Math.abs(yDiff) > xDiff && Math.abs(yDiff) > TouchSlop){
-            if (yDiff < 0){
+        if (Math.abs(yDiff) > xDiff && Math.abs(yDiff) > TouchSlop) {
+            if (yDiff < 0) {
                 Action = ACTION_SCROLL_DOWN;
-            }
-            else if (yDiff > 0){
+            } else if (yDiff > 0) {
                 Action = ACTION_SCROLL_UP;
             }
 
@@ -64,13 +73,14 @@ public class Calendar extends CalendarView {
 
     @Override
     public boolean performClick(){
-        final long msYear = TimeUnit.DAYS.toMillis(365);
-
         if (Action == ACTION_SCROLL_UP){
-            setDate(getDate() + msYear);
+            setDate(getDate() + TimeUnit.DAYS.toMillis(365));
         }
         else if (Action == ACTION_SCROLL_DOWN){
-            setDate(getDate() - msYear);
+            setDate(getDate() - TimeUnit.DAYS.toMillis(365));
+        }
+        else if (Action == ACTION_LONG_CLICK){
+            System.out.println("LongPress");
         }
 
         return super.performClick();
