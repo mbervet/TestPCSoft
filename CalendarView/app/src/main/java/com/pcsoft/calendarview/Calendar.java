@@ -1,4 +1,4 @@
-package com.test.calendarview;
+package com.pcsoft.calendarview;
 
 import android.content.Context;
 import android.util.AttributeSet;

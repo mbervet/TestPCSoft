@@ -1,4 +1,4 @@
-package com.test.calendarview;
+package com.pcsoft.calendarview;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
-    Calendar Calendar;
+    private Calendar Calendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

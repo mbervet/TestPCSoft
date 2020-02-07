@@ -1,4 +1,4 @@
-package com.test.calendarview;
+package com.pcsoft.calendarview;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.test.calendarview", appContext.getPackageName());
+        assertEquals("com.pcsoft.calendarview", appContext.getPackageName());
     }
 }
